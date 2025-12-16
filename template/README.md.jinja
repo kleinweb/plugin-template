@@ -1,6 +1,6 @@
-# Plugin Name
+# {{ prj_title }}
 
-A WordPress plugin template built with modern PHP practices: Composer, PHP-DI service container, PHP 8.3+ attributes, and Vite for assets.
+A WordPress plugin built with modern PHP practices: Composer, PHP-DI service container, PHP 8.3+ attributes, and Vite for assets.
 
 ## Requirements
 
@@ -97,7 +97,7 @@ The plugin uses PHP-DI for dependency injection. Services are registered through
 
 ```php
 // Access services anywhere
-$settings = \PluginName\plugin()->get(SettingsRegistry::class);
+$settings = \Kleinweb\{{ prj_slug }}\plugin()->get(SettingsRegistry::class);
 ```
 
 ### Attributes for Registration

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PluginName\Tests\Integration\Settings;
+namespace Kleinweb\{{ prj_namespace }}\Tests\Integration\Settings;
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use WP_REST_Request;
@@ -11,130 +11,130 @@ use WP_REST_Response;
 class SettingsRestApiTest extends WPTestCase
 {
     private int $adminId;
-    
+
     public function setUp(): void
     {
         parent::setUp();
-        
+
         // Create admin user
         $this->adminId = wp_create_user('admin', 'password', 'admin@example.com');
         $user = get_user_by('id', $this->adminId);
         $user->set_role('administrator');
-        
+
         // Initialize REST server
         global $wp_rest_server;
         $wp_rest_server = new \WP_REST_Server();
         do_action('rest_api_init');
     }
-    
+
     public function testSettingsEndpointIsRegistered(): void
     {
         $routes = rest_get_server()->get_routes();
-        
+
         $this->assertArrayHasKey('/plugin-name/v1/settings', $routes);
     }
-    
+
     public function testSettingsSchemaEndpointIsRegistered(): void
     {
         $routes = rest_get_server()->get_routes();
-        
+
         $this->assertArrayHasKey('/plugin-name/v1/settings/schema', $routes);
     }
-    
+
     public function testGetSettingsRequiresAuthentication(): void
     {
         $request = new WP_REST_Request('GET', '/plugin-name/v1/settings');
         $response = rest_get_server()->dispatch($request);
-        
+
         $this->assertSame(401, $response->get_status());
     }
-    
+
     public function testGetSettingsRequiresManageOptionsCapability(): void
     {
         // Log in as subscriber
         $subscriberId = wp_create_user('subscriber', 'password', 'subscriber@example.com');
         wp_set_current_user($subscriberId);
-        
+
         $request = new WP_REST_Request('GET', '/plugin-name/v1/settings');
         $response = rest_get_server()->dispatch($request);
-        
+
         $this->assertSame(403, $response->get_status());
     }
-    
+
     public function testGetSettingsReturnsSettingsForAdmin(): void
     {
         wp_set_current_user($this->adminId);
-        
+
         $request = new WP_REST_Request('GET', '/plugin-name/v1/settings');
         $response = rest_get_server()->dispatch($request);
-        
+
         $this->assertSame(200, $response->get_status());
-        
+
         $data = $response->get_data();
         $this->assertIsArray($data);
         $this->assertArrayHasKey('enable_feature', $data);
         $this->assertArrayHasKey('items_per_page', $data);
     }
-    
+
     public function testUpdateSettingsRequiresAuthentication(): void
     {
         $request = new WP_REST_Request('POST', '/plugin-name/v1/settings');
         $request->set_header('Content-Type', 'application/json');
         $request->set_body(json_encode(['enable_feature' => false]));
-        
+
         $response = rest_get_server()->dispatch($request);
-        
+
         $this->assertSame(401, $response->get_status());
     }
-    
+
     public function testUpdateSettingsUpdatesValues(): void
     {
         wp_set_current_user($this->adminId);
-        
+
         $request = new WP_REST_Request('POST', '/plugin-name/v1/settings');
         $request->set_header('Content-Type', 'application/json');
         $request->set_body(json_encode([
             'enable_feature' => false,
             'items_per_page' => 25,
         ]));
-        
+
         $response = rest_get_server()->dispatch($request);
-        
+
         $this->assertSame(200, $response->get_status());
-        
+
         $data = $response->get_data();
         $this->assertTrue($data['success']);
         $this->assertFalse($data['settings']['enable_feature']);
         $this->assertSame(25, $data['settings']['items_per_page']);
     }
-    
+
     public function testUpdateSettingsValidatesInput(): void
     {
         wp_set_current_user($this->adminId);
-        
+
         $request = new WP_REST_Request('POST', '/plugin-name/v1/settings');
         $request->set_header('Content-Type', 'application/json');
         $request->set_body(json_encode([
             'display_mode' => 'invalid_mode',
         ]));
-        
+
         $response = rest_get_server()->dispatch($request);
-        
+
         $this->assertSame(400, $response->get_status());
-        
+
         $data = $response->get_data();
         $this->assertSame('validation_failed', $data['code']);
     }
-    
+
     public function testGetSchemaReturnsSettingsSchema(): void
     {
         wp_set_current_user($this->adminId);
-        
+
         $request = new WP_REST_Request('GET', '/plugin-name/v1/settings/schema');
         $response = rest_get_server()->dispatch($request);
-        
+
         $this->assertSame(200, $response->get_status());
-        
+
         $data = $response->get_data();
         $this->assertArrayHasKey('general', $data);
         $this->assertArrayHasKey('api', $data);

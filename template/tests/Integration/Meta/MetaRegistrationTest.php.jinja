@@ -2,79 +2,79 @@
 
 declare(strict_types=1);
 
-namespace PluginName\Tests\Integration\Meta;
+namespace Kleinweb\{{ prj_namespace }}\Tests\Integration\Meta;
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
 class PostMetaTest extends WPTestCase
 {
     private int $projectId;
-    
+
     public function setUp(): void
     {
         parent::setUp();
-        
+
         $this->projectId = wp_insert_post([
             'post_type' => 'project',
             'post_title' => 'Test Project',
             'post_status' => 'publish',
         ]);
     }
-    
+
     public function testProjectClientMetaIsRegistered(): void
     {
         $registered = registered_meta_key_exists('post', 'project_client', 'project');
-        
+
         $this->assertTrue($registered);
     }
-    
+
     public function testProjectStatusMetaIsRegistered(): void
     {
         $registered = registered_meta_key_exists('post', 'project_status', 'project');
-        
+
         $this->assertTrue($registered);
     }
-    
+
     public function testProjectFeaturedMetaIsRegistered(): void
     {
         $registered = registered_meta_key_exists('post', 'project_featured', 'project');
-        
+
         $this->assertTrue($registered);
     }
-    
+
     public function testCanSaveAndRetrieveProjectClient(): void
     {
         update_post_meta($this->projectId, 'project_client', 'Acme Corp');
-        
+
         $client = get_post_meta($this->projectId, 'project_client', true);
-        
+
         $this->assertSame('Acme Corp', $client);
     }
-    
+
     public function testCanSaveAndRetrieveProjectStatus(): void
     {
         update_post_meta($this->projectId, 'project_status', 'completed');
-        
+
         $status = get_post_meta($this->projectId, 'project_status', true);
-        
+
         $this->assertSame('completed', $status);
     }
-    
+
     public function testCanSaveAndRetrieveProjectFeatured(): void
     {
         update_post_meta($this->projectId, 'project_featured', true);
-        
+
         $featured = get_post_meta($this->projectId, 'project_featured', true);
-        
+
         $this->assertTrue((bool) $featured);
     }
-    
+
     public function testProjectBudgetAcceptsNumericValue(): void
     {
         update_post_meta($this->projectId, 'project_budget', 50000);
-        
+
         $budget = get_post_meta($this->projectId, 'project_budget', true);
-        
+
         $this->assertEquals(50000, $budget);
     }
 }
@@ -82,44 +82,44 @@ class PostMetaTest extends WPTestCase
 class TermMetaTest extends WPTestCase
 {
     private int $termId;
-    
+
     public function setUp(): void
     {
         parent::setUp();
-        
+
         $term = wp_insert_term('Test Category', 'category');
         $this->termId = $term['term_id'];
     }
-    
+
     public function testCategoryColorMetaIsRegistered(): void
     {
         $registered = registered_meta_key_exists('term', 'category_color', 'category');
-        
+
         $this->assertTrue($registered);
     }
-    
+
     public function testCategoryFeaturedMetaIsRegistered(): void
     {
         $registered = registered_meta_key_exists('term', 'category_featured', 'category');
-        
+
         $this->assertTrue($registered);
     }
-    
+
     public function testCanSaveAndRetrieveCategoryColor(): void
     {
         update_term_meta($this->termId, 'category_color', '#ff5500');
-        
+
         $color = get_term_meta($this->termId, 'category_color', true);
-        
+
         $this->assertSame('#ff5500', $color);
     }
-    
+
     public function testCanSaveAndRetrieveCategoryOrder(): void
     {
         update_term_meta($this->termId, 'category_order', 5);
-        
+
         $order = get_term_meta($this->termId, 'category_order', true);
-        
+
         $this->assertEquals(5, $order);
     }
 }
@@ -127,52 +127,52 @@ class TermMetaTest extends WPTestCase
 class UserMetaTest extends WPTestCase
 {
     private int $userId;
-    
+
     public function setUp(): void
     {
         parent::setUp();
-        
+
         $this->userId = wp_create_user('testuser', 'password', 'test@example.com');
     }
-    
+
     public function testUserJobTitleMetaIsRegistered(): void
     {
         $registered = registered_meta_key_exists('user', 'user_job_title');
-        
+
         $this->assertTrue($registered);
     }
-    
+
     public function testUserDepartmentMetaIsRegistered(): void
     {
         $registered = registered_meta_key_exists('user', 'user_department');
-        
+
         $this->assertTrue($registered);
     }
-    
+
     public function testCanSaveAndRetrieveUserJobTitle(): void
     {
         update_user_meta($this->userId, 'user_job_title', 'Senior Developer');
-        
+
         $title = get_user_meta($this->userId, 'user_job_title', true);
-        
+
         $this->assertSame('Senior Developer', $title);
     }
-    
+
     public function testCanSaveAndRetrieveUserDepartment(): void
     {
         update_user_meta($this->userId, 'user_department', 'engineering');
-        
+
         $dept = get_user_meta($this->userId, 'user_department', true);
-        
+
         $this->assertSame('engineering', $dept);
     }
-    
+
     public function testCanSaveAndRetrieveUserIsManager(): void
     {
         update_user_meta($this->userId, 'user_is_manager', true);
-        
+
         $isManager = get_user_meta($this->userId, 'user_is_manager', true);
-        
+
         $this->assertTrue((bool) $isManager);
     }
 }

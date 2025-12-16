@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PluginName\Tests\Unit\Attributes;
+namespace Kleinweb\{{ prj_namespace }}\Tests\Unit\Attributes;
 
-use PluginName\Attributes\PostType;
-use PluginName\Tests\Unit\TestCase;
+use Kleinweb\{{ prj_namespace }}\Attributes\PostType;
+use Kleinweb\{{ prj_namespace }}\Tests\Unit\TestCase;
 
 final class PostTypeAttributeTest extends TestCase
 {
@@ -16,7 +16,7 @@ final class PostTypeAttributeTest extends TestCase
             singular: 'Book',
             plural: 'Books'
         );
-        
+
         $this->assertSame('book', $postType->slug);
         $this->assertSame('Book', $postType->singular);
         $this->assertSame('Books', $postType->plural);
@@ -24,7 +24,7 @@ final class PostTypeAttributeTest extends TestCase
         $this->assertTrue($postType->hasArchive);
         $this->assertTrue($postType->showInRest);
     }
-    
+
     public function testCreatesPostTypeWithCustomOptions(): void
     {
         $postType = new PostType(
@@ -40,7 +40,7 @@ final class PostTypeAttributeTest extends TestCase
             taxonomies: ['category', 'post_tag'],
             rewriteSlug: 'work'
         );
-        
+
         $this->assertSame('project', $postType->slug);
         $this->assertFalse($postType->public);
         $this->assertFalse($postType->hasArchive);
@@ -51,7 +51,7 @@ final class PostTypeAttributeTest extends TestCase
         $this->assertSame(['category', 'post_tag'], $postType->taxonomies);
         $this->assertSame('work', $postType->rewriteSlug);
     }
-    
+
     public function testToArgsReturnsValidWordPressArgs(): void
     {
         $postType = new PostType(
@@ -61,9 +61,9 @@ final class PostTypeAttributeTest extends TestCase
             menuIcon: 'dashicons-portfolio',
             rewriteSlug: 'work'
         );
-        
+
         $args = $postType->toArgs();
-        
+
         $this->assertIsArray($args);
         $this->assertArrayHasKey('labels', $args);
         $this->assertArrayHasKey('public', $args);
@@ -74,14 +74,14 @@ final class PostTypeAttributeTest extends TestCase
         $this->assertArrayHasKey('supports', $args);
         $this->assertArrayHasKey('taxonomies', $args);
         $this->assertArrayHasKey('rewrite', $args);
-        
+
         $this->assertTrue($args['public']);
         $this->assertTrue($args['has_archive']);
         $this->assertTrue($args['show_in_rest']);
         $this->assertSame('dashicons-portfolio', $args['menu_icon']);
         $this->assertSame(['slug' => 'work'], $args['rewrite']);
     }
-    
+
     public function testLabelsAreGeneratedCorrectly(): void
     {
         $postType = new PostType(
@@ -89,10 +89,10 @@ final class PostTypeAttributeTest extends TestCase
             singular: 'Book',
             plural: 'Books'
         );
-        
+
         $args = $postType->toArgs();
         $labels = $args['labels'];
-        
+
         $this->assertSame('Books', $labels['name']);
         $this->assertSame('Book', $labels['singular_name']);
         $this->assertSame('Add New Book', $labels['add_new']);
@@ -101,7 +101,7 @@ final class PostTypeAttributeTest extends TestCase
         $this->assertSame('No books found', $labels['not_found']);
         $this->assertSame('All Books', $labels['all_items']);
     }
-    
+
     public function testRewriteIsTrueWhenNoCustomSlug(): void
     {
         $postType = new PostType(
@@ -109,9 +109,9 @@ final class PostTypeAttributeTest extends TestCase
             singular: 'Book',
             plural: 'Books'
         );
-        
+
         $args = $postType->toArgs();
-        
+
         $this->assertTrue($args['rewrite']);
     }
 }

@@ -2,55 +2,55 @@
 
 declare(strict_types=1);
 
-namespace PluginName\Tests\Unit\Settings;
+namespace Kleinweb\{{ prj_namespace }}\Tests\Unit\Settings;
 
 use Brain\Monkey\Functions;
-use PluginName\Settings\SettingsRegistry;
-use PluginName\Tests\Unit\TestCase;
+use Kleinweb\{{ prj_namespace }}\Settings\SettingsRegistry;
+use Kleinweb\{{ prj_namespace }}\Tests\Unit\TestCase;
 
 final class SettingsRegistryTest extends TestCase
 {
     private SettingsRegistry $registry;
-    
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->registry = new SettingsRegistry();
     }
-    
+
     public function testGetSchemaReturnsArray(): void
     {
         $schema = $this->registry->getSchema();
-        
+
         $this->assertIsArray($schema);
         $this->assertNotEmpty($schema);
     }
-    
+
     public function testSchemaHasExpectedSections(): void
     {
         $schema = $this->registry->getSchema();
-        
+
         $this->assertArrayHasKey('general', $schema);
         $this->assertArrayHasKey('api', $schema);
         $this->assertArrayHasKey('advanced', $schema);
     }
-    
+
     public function testEachSectionHasLabelAndFields(): void
     {
         $schema = $this->registry->getSchema();
-        
+
         foreach ($schema as $sectionKey => $section) {
             $this->assertArrayHasKey('label', $section, "Section '$sectionKey' missing label");
             $this->assertArrayHasKey('fields', $section, "Section '$sectionKey' missing fields");
             $this->assertIsArray($section['fields']);
         }
     }
-    
+
     public function testFieldsHaveRequiredProperties(): void
     {
         $schema = $this->registry->getSchema();
         $requiredProps = ['type', 'default', 'label', 'description', 'inputType'];
-        
+
         foreach ($schema as $sectionKey => $section) {
             foreach ($section['fields'] as $fieldKey => $field) {
                 foreach ($requiredProps as $prop) {
@@ -63,12 +63,12 @@ final class SettingsRegistryTest extends TestCase
             }
         }
     }
-    
+
     public function testGetDefaultsReturnsAllFieldDefaults(): void
     {
         $defaults = $this->registry->getDefaults();
         $schema = $this->registry->getSchema();
-        
+
         foreach ($schema as $section) {
             foreach ($section['fields'] as $key => $field) {
                 $this->assertArrayHasKey($key, $defaults);
@@ -76,137 +76,137 @@ final class SettingsRegistryTest extends TestCase
             }
         }
     }
-    
+
     public function testGetWithNoKeyReturnsAllSettings(): void
     {
         Functions\expect('get_option')
             ->once()
             ->with('plugin_name_settings', [])
             ->andReturn(['enable_feature' => false]);
-        
+
         $settings = $this->registry->get();
-        
+
         $this->assertIsArray($settings);
         $this->assertFalse($settings['enable_feature']);
         // Should have defaults merged in
         $this->assertArrayHasKey('items_per_page', $settings);
     }
-    
+
     public function testGetWithKeyReturnsSpecificSetting(): void
     {
         Functions\expect('get_option')
             ->once()
             ->with('plugin_name_settings', [])
             ->andReturn(['items_per_page' => 25]);
-        
+
         $value = $this->registry->get('items_per_page');
-        
+
         $this->assertSame(25, $value);
     }
-    
+
     public function testGetReturnsDefaultWhenNotSet(): void
     {
         Functions\expect('get_option')
             ->once()
             ->with('plugin_name_settings', [])
             ->andReturn([]);
-        
+
         $value = $this->registry->get('items_per_page');
-        
+
         $this->assertSame(10, $value); // default from schema
     }
-    
+
     public function testSetMergesWithCurrentSettings(): void
     {
         Functions\expect('get_option')
             ->once()
             ->andReturn(['enable_feature' => true]);
-        
+
         Functions\expect('update_option')
             ->once()
             ->with('plugin_name_settings', \Mockery::type('array'))
             ->andReturn(true);
-        
+
         $result = $this->registry->set(['items_per_page' => 20]);
-        
+
         $this->assertTrue($result);
     }
-    
+
     public function testSanitizeBoolean(): void
     {
         $sanitized = $this->registry->sanitize([
             'enable_feature' => 1,
             'debug_mode' => 'yes',
         ]);
-        
+
         $this->assertTrue($sanitized['enable_feature']);
         $this->assertTrue($sanitized['debug_mode']);
     }
-    
+
     public function testSanitizeInteger(): void
     {
         $sanitized = $this->registry->sanitize([
             'items_per_page' => '25',
             'cache_duration' => 7200.5,
         ]);
-        
+
         $this->assertSame(25, $sanitized['items_per_page']);
         $this->assertSame(7200, $sanitized['cache_duration']);
     }
-    
+
     public function testSanitizeUrl(): void
     {
         $sanitized = $this->registry->sanitize([
             'api_endpoint' => 'https://api.example.com/v2',
         ]);
-        
+
         $this->assertSame('https://api.example.com/v2', $sanitized['api_endpoint']);
     }
-    
+
     public function testValidateReturnsEmptyArrayForValidData(): void
     {
         $errors = $this->registry->validate([
             'display_mode' => 'grid',
             'items_per_page' => 10,
         ]);
-        
+
         $this->assertEmpty($errors);
     }
-    
+
     public function testValidateReturnsErrorForInvalidOption(): void
     {
         $errors = $this->registry->validate([
             'display_mode' => 'invalid_mode',
         ]);
-        
+
         $this->assertArrayHasKey('display_mode', $errors);
     }
-    
+
     public function testValidateReturnsErrorWhenBelowMin(): void
     {
         $errors = $this->registry->validate([
             'items_per_page' => 0,
         ]);
-        
+
         $this->assertArrayHasKey('items_per_page', $errors);
     }
-    
+
     public function testValidateReturnsErrorWhenAboveMax(): void
     {
         $errors = $this->registry->validate([
             'items_per_page' => 500,
         ]);
-        
+
         $this->assertArrayHasKey('items_per_page', $errors);
     }
-    
+
     public function testIgnoresUnknownFieldsInSanitize(): void
     {
         $sanitized = $this->registry->sanitize([
             'unknown_field' => 'value',
             'enable_feature' => true,
         ]);
-        
+
         $this->assertArrayNotHasKey('unknown_field', $sanitized);
         $this->assertArrayHasKey('enable_feature', $sanitized);
     }
