@@ -24,15 +24,15 @@ _subdirectory: template
 
 prj_slug:
   type: str
-  help: 'What is the site slug?'
+  help: 'What is the plugin slug?'
 
 prj_title:
   type: str
-  help: 'What is the site title?'
+  help: 'What is the plugin title?'
 
 prj_namespace:
   type: str
-  help: 'Define a PHP namespace in UpperCamelCase'
+  help: 'Define a PHP namespace for the plugin in UpperCamelCase'
 
 prj_repo_name:
   type: str
