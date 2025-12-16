@@ -1,0 +1,6 @@
+# Build Output
+
+This directory contains compiled assets from Vite.
+
+Run `npm run build` to generate production assets.
+Run `npm run dev` to start the development server with HMR.

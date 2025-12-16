@@ -1,0 +1,117 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PluginName\Tests\Unit\Attributes;
+
+use PluginName\Attributes\PostType;
+use PluginName\Tests\Unit\TestCase;
+
+final class PostTypeAttributeTest extends TestCase
+{
+    public function testCreatesPostTypeWithDefaults(): void
+    {
+        $postType = new PostType(
+            slug: 'book',
+            singular: 'Book',
+            plural: 'Books'
+        );
+        
+        $this->assertSame('book', $postType->slug);
+        $this->assertSame('Book', $postType->singular);
+        $this->assertSame('Books', $postType->plural);
+        $this->assertTrue($postType->public);
+        $this->assertTrue($postType->hasArchive);
+        $this->assertTrue($postType->showInRest);
+    }
+    
+    public function testCreatesPostTypeWithCustomOptions(): void
+    {
+        $postType = new PostType(
+            slug: 'project',
+            singular: 'Project',
+            plural: 'Projects',
+            public: false,
+            hasArchive: false,
+            showInRest: false,
+            menuIcon: 'dashicons-portfolio',
+            menuPosition: 5,
+            supports: ['title', 'thumbnail'],
+            taxonomies: ['category', 'post_tag'],
+            rewriteSlug: 'work'
+        );
+        
+        $this->assertSame('project', $postType->slug);
+        $this->assertFalse($postType->public);
+        $this->assertFalse($postType->hasArchive);
+        $this->assertFalse($postType->showInRest);
+        $this->assertSame('dashicons-portfolio', $postType->menuIcon);
+        $this->assertSame(5, $postType->menuPosition);
+        $this->assertSame(['title', 'thumbnail'], $postType->supports);
+        $this->assertSame(['category', 'post_tag'], $postType->taxonomies);
+        $this->assertSame('work', $postType->rewriteSlug);
+    }
+    
+    public function testToArgsReturnsValidWordPressArgs(): void
+    {
+        $postType = new PostType(
+            slug: 'project',
+            singular: 'Project',
+            plural: 'Projects',
+            menuIcon: 'dashicons-portfolio',
+            rewriteSlug: 'work'
+        );
+        
+        $args = $postType->toArgs();
+        
+        $this->assertIsArray($args);
+        $this->assertArrayHasKey('labels', $args);
+        $this->assertArrayHasKey('public', $args);
+        $this->assertArrayHasKey('has_archive', $args);
+        $this->assertArrayHasKey('show_in_rest', $args);
+        $this->assertArrayHasKey('menu_icon', $args);
+        $this->assertArrayHasKey('menu_position', $args);
+        $this->assertArrayHasKey('supports', $args);
+        $this->assertArrayHasKey('taxonomies', $args);
+        $this->assertArrayHasKey('rewrite', $args);
+        
+        $this->assertTrue($args['public']);
+        $this->assertTrue($args['has_archive']);
+        $this->assertTrue($args['show_in_rest']);
+        $this->assertSame('dashicons-portfolio', $args['menu_icon']);
+        $this->assertSame(['slug' => 'work'], $args['rewrite']);
+    }
+    
+    public function testLabelsAreGeneratedCorrectly(): void
+    {
+        $postType = new PostType(
+            slug: 'book',
+            singular: 'Book',
+            plural: 'Books'
+        );
+        
+        $args = $postType->toArgs();
+        $labels = $args['labels'];
+        
+        $this->assertSame('Books', $labels['name']);
+        $this->assertSame('Book', $labels['singular_name']);
+        $this->assertSame('Add New Book', $labels['add_new']);
+        $this->assertSame('Add New Book', $labels['add_new_item']);
+        $this->assertSame('Edit Book', $labels['edit_item']);
+        $this->assertSame('No books found', $labels['not_found']);
+        $this->assertSame('All Books', $labels['all_items']);
+    }
+    
+    public function testRewriteIsTrueWhenNoCustomSlug(): void
+    {
+        $postType = new PostType(
+            slug: 'book',
+            singular: 'Book',
+            plural: 'Books'
+        );
+        
+        $args = $postType->toArgs();
+        
+        $this->assertTrue($args['rewrite']);
+    }
+}

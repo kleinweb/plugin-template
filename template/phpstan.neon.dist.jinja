@@ -1,0 +1,26 @@
+# -*- mode: neon; -*-
+
+# SPDX-FileCopyrightText: 2024-2025 Temple University <kleinweb@temple.edu>
+# SPDX-License-Identifier: CC0-1.0
+
+includes:
+    # <https://github.com/phpstan/phpstan-src/blob/master/conf/bleedingEdge.neon>
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+parameters:
+    level: 8
+    inferPrivatePropertyTypeFromConstructor: true
+    paths:
+        - src
+        - {{ prj_slug }}.php
+    excludePaths:
+        - vendor
+    bootstrapFiles:
+        - vendor/autoload.php
+    scanDirectories:
+        - wp/wp-includes
+    ignoreErrors:
+        # WordPress global functions that PHPStan doesn't recognize
+        - '#Function register_post_type not found#'
+        - '#Function register_meta not found#'
+        - '#Function add_action not found#'
+        - '#Function add_filter not found#'

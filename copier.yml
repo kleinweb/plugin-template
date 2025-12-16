@@ -1,0 +1,40 @@
+---
+# === Settings ===
+
+_exclude:
+  - .bin
+  - .cache
+  - .data
+  - .direnv
+  - .run
+  - result
+  # Defaults:
+  - 'copier.yaml'
+  - 'copier.yml'
+  - '~*'
+  - '*.py[co]'
+  - '__pycache__'
+  - '.git'
+  - '.DS_Store'
+  - '.svn'
+_preserve_symlinks: true
+_subdirectory: template
+
+# === Questions ===
+
+prj_slug:
+  type: str
+  help: 'What is the site slug?'
+
+prj_title:
+  type: str
+  help: 'What is the site title?'
+
+prj_namespace:
+  type: str
+  help: 'Define a PHP namespace in UpperCamelCase'
+
+prj_repo_name:
+  type: str
+  help: 'What is the name of the project GitHub repo?'
+  default: '{{ prj_slug }}'
