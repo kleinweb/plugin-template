@@ -1,6 +1,5 @@
-# SPDX-FileCopyrightText: (C) 2025 Temple University <kleinweb@temple.edu>
+# SPDX-FileCopyrightText: (C) 2024-2026 Temple University <kleinweb@temple.edu>
 # SPDX-License-Identifier: GPL-3.0-or-later
-
 {
   perSystem =
     {
@@ -15,6 +14,8 @@
         config.pre-commit.settings.hooks.yamllint.package
         inputs'.nixpkgs-trunk.legacyPackages.biome
         inputs'.beams.packages.php-lint
+
+        pkgs.biome
         pkgs.dotenv-linter
       ];
 
@@ -28,10 +29,10 @@
 
       formatterPkgs = [
         pkgs.dos2unix
-        pkgs.nixfmt # pkgs.nixfmt-rfc-style via overlay
+        pkgs.nixfmt
         pkgs.nodePackages.prettier
         pkgs.taplo
-        pkgs.treefmt # pkgs.treefmt2 via overlay
+        pkgs.treefmt
       ];
 
       releasePkgs = [
@@ -39,11 +40,11 @@
       ];
 
       commonPkgs = [
+        pkgs.biome
         pkgs.curl
         pkgs.fd
         pkgs.gnused
         pkgs.jq
-        inputs'.nixpkgs-trunk.legacyPackages.biome
         pkgs.moreutils
         pkgs.ripgrep
         pkgs.nodejs
@@ -53,7 +54,8 @@
         pkgs.wp-cli
       ];
 
-      developmentPkgs = commonPkgs ++ checksPkgs ++ buildsPkgs ++ deployPkgs;
+      developmentPkgs =
+        commonPkgs ++ checksPkgs ++ buildsPkgs ++ deployPkgs ++ formatterPkgs ++ releasePkgs;
 
       playwrightShellHook = ''
         export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright-driver.browsers}
@@ -71,9 +73,6 @@
           ${playwrightShellHook}
         '';
         nativeBuildInputs = developmentPkgs ++ [
-          # TODO: Remove when available upstream: https://github.com/NixOS/nixpkgs/pull/344503
-          inputs'.beams.packages.ddev
-
           pkgs.playwright-driver.browsers
         ];
       };

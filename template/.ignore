@@ -1,6 +1,5 @@
 *.cache
 *.local
-.config/x509/keys
 .data
 .git
 node_modules

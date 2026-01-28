@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024-2025 Temple University <kleinweb@temple.edu>
+# SPDX-FileCopyrightText: 2024-2026 Temple University <kleinweb@temple.edu>
 # SPDX-License-Identifier: GPL-3.0-or-later
 {
   perSystem =
@@ -20,10 +20,7 @@
           markdownlint.excludes = [
             # Auto-generated
             "CHANGELOG.md"
-
-            # Auto-exported from private/migrate/migration.org
-            "private/migrate/migrate.md"
-            "private/migrate/README.md"
+            "CLAUDE.md"
           ];
           php-lint = {
             enable = true;
@@ -41,7 +38,6 @@
           yamllint.enable = true;
           yamllint.excludes = [
             "^\.copier-answers\.yml$"
-            "^\.ddev/.+$"
           ];
         };
         default_stages = [
