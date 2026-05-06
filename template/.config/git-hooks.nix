@@ -22,18 +22,6 @@
             "CHANGELOG.md"
             "CLAUDE.md"
           ];
-          php-lint = {
-            enable = true;
-            description = "Check PHP files for syntax errors";
-            package = inputs'.beams.packages.php-lint;
-            entry = "php-lint";
-            types = [
-              "file"
-              "php"
-            ];
-            # Other PHP linters will likely fail when there are syntax errors.
-            fail_fast = true;
-          };
           treefmt.enable = true;
           yamllint.enable = true;
           yamllint.excludes = [
@@ -44,7 +32,6 @@
           "pre-commit"
           "pre-push"
         ];
-
         excludes = [ ];
       };
     };

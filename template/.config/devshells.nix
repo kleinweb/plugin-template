@@ -12,11 +12,6 @@
       checksPkgs = [
         config.pre-commit.settings.hooks.markdownlint.package
         config.pre-commit.settings.hooks.yamllint.package
-        inputs'.nixpkgs-trunk.legacyPackages.biome
-        inputs'.beams.packages.php-lint
-
-        pkgs.biome
-        pkgs.dotenv-linter
       ];
 
       buildsPkgs = [
@@ -30,7 +25,7 @@
       formatterPkgs = [
         pkgs.dos2unix
         pkgs.nixfmt
-        pkgs.nodePackages.prettier
+        pkgs.prettier
         pkgs.taplo
         pkgs.treefmt
       ];

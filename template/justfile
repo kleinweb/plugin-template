@@ -3,49 +3,16 @@
 
 ###: <https://just.systems/man/en/>
 
-set dotenv-load
-set dotenv-required
+import ".config/common.vars.just"
 
-mod reuse '.config/reuse.just'
-mod? kinsta '.config/kinsta'
-mod? release '.config/release.just'
-mod? sso '.config/sso'
-mod? wp '.config/wp'
+mod qa ".config/qa.just"
+mod release ".config/release.just"
+mod reuse ".config/reuse.just"
 
-prj-root := env("PRJ_ROOT")
+alias check := qa::check
+alias lint := qa::lint
+alias fix := qa::fix
+alias fmt := qa::fmt
 
-# Display a list of available tasks as the default command
 default:
   @just --choose
-
-build:
-   fd -t f '^vite\.config\.' -a -x \
-     bash -c 'cd {//} && npm exec vite build'
-
-[group: "qa"]
-[doc: "Check for any lint or formatting issues on project files"]
-check:
-  dotenv-linter check
-  biome check {{prj-root}}
-  nix run 'github:kleinweb/beams#php-lint-project'
-  composer php-cs-fixer -- check
-  composer phpcs
-  composer phpstan
-
-[group: "qa"]
-[doc: "Check for (non-stylistic) linting issues on project files"]
-lint:
-  biome lint {{prj-root}}
-  nix run 'github:kleinweb/beams#php-lint-project'
-  composer lint
-
-[group: "qa"]
-[doc: "Write *all* formatter+fixer changes to project files"]
-fix:
-  treefmt
-  composer fix
-
-[group: "qa"]
-[doc: "Write _safe_ formatter changes to project files"]
-fmt:
-  treefmt

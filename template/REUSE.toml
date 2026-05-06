@@ -4,14 +4,18 @@
 version = 1
 
 [[annotations]]
-path = ["**.blade.php"]
+path = ["**.blade.php", "resources/dist/**.css", "resources/dist/**.js"]
 SPDX-FileCopyrightText = "(C) 2024-2026 Temple University <kleinweb@temple.edu>"
 SPDX-License-Identifier = "GPL-3.0-or-later"
 
 [[annotations]]
 path = [
+  "**.dist",
+  "**.dist.*",
   "**.json",
   "**.lock",
+  "**.map",
+  "**.neon",
   "**.properties",
   "**.yml",
   "**.d.ts",
@@ -19,7 +23,9 @@ path = [
   "**/.gitattributes",
   "**/.gitignore",
   "**/.gitkeep",
+  "**/.markdownlintignore",
   ".config/org_id",
+  "resources/**.map",
 ]
 SPDX-FileCopyrightText = "(C) 2024-2026 Temple University <kleinweb@temple.edu>"
 SPDX-License-Identifier = "CC0-1.0"
