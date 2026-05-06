@@ -25,7 +25,7 @@ hooks:
           wp plugin activate {{ prj_slug }} --path=wp
         fi
     - exec: composer install
-    - exec: npm install
+    - exec: pnpm install
 
 web_extra_exposed_ports:
   - name: vite

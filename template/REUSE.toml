@@ -25,6 +25,7 @@ path = [
   "**/.gitkeep",
   "**/.markdownlintignore",
   ".config/org_id",
+  "pnpm-lock.yaml",
   "resources/**.map",
 ]
 SPDX-FileCopyrightText = "(C) 2024-2026 Temple University <kleinweb@temple.edu>"

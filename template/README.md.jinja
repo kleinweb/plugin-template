@@ -16,16 +16,16 @@ A WordPress plugin built with modern PHP practices: Composer, PHP-DI service con
 ```bash
 ddev start
 ddev composer install
-ddev npm install
-ddev npm run build
+ddev pnpm install
+ddev pnpm run build
 ```
 
 ### Manual Setup
 
 ```bash
 composer install
-npm install
-npm run build
+pnpm install
+pnpm run build
 ```
 
 Then symlink or copy the plugin to your WordPress `wp-content/plugins/` directory.
@@ -37,13 +37,13 @@ Then symlink or copy the plugin to your WordPress `wp-content/plugins/` director
 Start the Vite dev server for hot module replacement:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Build for production:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ### PHP Development

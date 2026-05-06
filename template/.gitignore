@@ -5,9 +5,6 @@
 .data
 *.log*
 *.sql
-/test-results/
-/playwright-report/
-/blob-report/
 
 # Secrets
 auth.json
@@ -16,6 +13,7 @@ auth.json
 !.env.example
 .ssh
 *.key
+*.pem
 
 # Dependencies
 node_modules
@@ -31,5 +29,4 @@ vendor
 .pre-commit-config.yaml
 
 # Build artifacts
-hot
 result
